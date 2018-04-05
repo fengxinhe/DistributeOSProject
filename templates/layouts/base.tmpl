@@ -1,0 +1,69 @@
+{{define "base"}}
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   <title>GO Bird</title>
+
+
+  <!-- include libraries(jQuery, bootstrap) -->
+<link href="http://netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.css" rel="stylesheet">
+<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+<script src="http://netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.js"></script>
+
+<!--[if IE 6]><link href="default_ie6.css" rel="stylesheet" type="text/css" /><![endif]-->
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+
+ <!-- include libraries(jQuery, bootstrap) -->
+ <link href="http://netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.css" rel="stylesheet">
+ <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+ <script src="http://netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.js"></script>
+
+<!-- include summernote css/js -->
+<link href="{{ .Static }}css/default.css" rel="stylesheet" type="text/css" media="all" />
+<link href="{{ .Static }}css/fonts.css" rel="stylesheet" type="text/css" media="all" />
+
+<link href="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.9/summernote.css" rel="stylesheet">
+<script src="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.9/summernote.js"></script>
+
+</head>
+<body>
+    <div id="head-wrapper">
+    	<div id="headermo" class="containermo">
+    		<div id="logo">
+    			<h1><span class="icon icon-cog"></span><a href="#">WorkShop, {{block "Title" .}} {{end}}</a></h1>
+    			<div id="menu">
+    				<ul>
+    					<li class="current_page_item"><a href="#" accesskey="1" title="">Homepage</a></li>
+    					<li><a href="#" accesskey="2" title="">Classes</a></li>
+    					<li><a href="#" accesskey="3" title="">Contests</a></li>
+    					<li><a href="#" accesskey="4" title="">Community</a></li>
+    					<li><a href="#" accesskey="5" title="">Contact Us</a></li>
+    				</ul>
+    			</div>
+    		</div>
+    	</div>
+    </div>
+    <div id="page-wrapper">
+    	<div id="page" class="container">
+    		<div class="title">
+    			<h2>welcome to our website</h2>
+    		</div>
+    		<p>This is <strong>workshop</strong>, a free platform to show your talents, help others and learn something interesting. </p>
+    	</div>
+    </div>
+
+
+<div class="wrapper">
+
+{{template "content" .}}
+
+
+</div>
+
+
+</body>
+</html>
+
+{{end}}

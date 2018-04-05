@@ -1,0 +1,30 @@
+{{define "Title"}} index {{end}}
+{{define "content"}}
+<div id="portfolio" class="container">
+
+<div id="projects">
+        <p><strong>Blogs</strong></p>
+		{{ range .Blogs }}
+		<div class="row">
+			<div class="box"> <a href="#">
+				<h3>Title: {{.BlogTitle}} <p> Author: {{.BlogAuthor}}</p>
+                    Heat: {{.BlogHeat}}</h3>
+                <textarea contenteditable="false" class="summernote" name="summernote"> {{.BlogContent}}</textarea>
+
+			</div>
+		</div>
+		{{end}}
+	</div>
+
+</div>
+
+
+<script type="text/javascript">
+    $(".summernote").summernote(
+    {
+        toolbar:false,
+    });
+    $('div[contenteditable="true"]').attr('contenteditable', false);;
+
+</script>
+{{end}}

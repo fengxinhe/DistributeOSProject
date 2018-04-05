@@ -1,0 +1,19 @@
+{
+
+    "Server": {
+        "HostName" : "localhost",
+        "UseHttp": true,
+        "UseHttps": false,
+        "HttpPort": "8400",
+        "HttpsPort": "8400"
+    },
+    "View": {
+        "StaticURL" : "/home/firebug/go/gobird/static/",
+        "BaseURI" : "/",
+        "Name" : "blank"
+    },
+    "Static":{
+        "STATIC_URL":"/home/firebug/go/gobird/static/",
+        "STATIC_ROOT":"/home/firebug/go/gobird/static/"
+    }
+}

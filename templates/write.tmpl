@@ -1,0 +1,64 @@
+{{define "Title"}} index {{end}}
+{{define "content"}}
+<div class="step-container">
+
+    <form action="/write" id="project-content" enctype="multipart/form-data" method="post" onsubmit="return postForm()">
+        <table>
+            <tr>
+            <div class="project-title">
+                <label for="class_title">Blog Title</label>
+                <div><input type="text" class="form-control" id="blog_title" name="blog_title" maxlength="48" placeholder="title" value="{{.project_title}}" /></div>
+            </div>
+            </tr>
+
+        <tr>
+            <textarea class="summernote" name="summernotecode"></textarea>
+        </tr>
+
+        <tr>
+            <div class="form-submit">
+                    <input id="blog-submit" type="submit" value="publish" class="btn btn-primary" />
+            </div>
+        </tr>
+
+        </table>
+    </form>
+
+<div class="summernote1">summernote 2</div>
+</div>
+
+
+<script type="text/javascript">
+$('.summernote').summernote();
+
+$('#edit').click(function(e){
+    console.log(id)
+    $('#summernote-container').summernote({focus: true});
+});
+
+$('#save').click(function(e){
+    var markup = $('#summernote-container').summernote('code');
+    $('#summernotecode').val(markup);
+    $('#summernote-container').summernote('destroy');
+});
+var edit = function(){
+    console.log(id)
+    $('#summernote-container').summernote({focus: true});
+};
+
+
+var save = function() {
+  var markup = $('#summernote-container').summernote('code');
+  $('#summernotecode').val(markup);
+  $('#summernote-container').summernote('destroy');
+};
+
+
+
+</script>
+
+
+
+
+
+{{end}}

@@ -1,0 +1,27 @@
+{{define "Title"}}Login{{end}}
+{{define "content"}}
+
+<div class="container">
+
+	<form method="post">
+		<div class="form-group">
+			<label for="username">Username</label>
+			<div><input type="username" class="form-control" id="username" name="user_name" maxlength="48" placeholder="username"  /></div>
+		</div>
+
+		<div class="form-group">
+			<label for="password">Password</label>
+			<div><input type="password" class="form-control" id="password" name="user_psd" maxlength="48" placeholder="Password" /></div>
+		</div>
+
+		<input type="submit" class="btn btn-primary" value="Login" class="button" />
+
+	</form>
+
+	<p style="margin-top: 15px;">
+	</p>
+
+</div>
+
+{{end}}
+{{define "foot"}}{{end}}
