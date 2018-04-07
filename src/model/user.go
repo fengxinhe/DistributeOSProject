@@ -18,7 +18,7 @@ type User struct{
 
 
 func UserRead(fn string) (string, error) {
-    path:="/home/firebug/go/gobird/src/db/account/"+fn+".json"
+    path:="/home/firebug/go/src/gobird/src/db/account/"+fn+".json"
     data, err := ioutil.ReadFile(path)
     if err != nil {
         fmt.Println("no such user! error username!")
@@ -36,7 +36,7 @@ func UserRead(fn string) (string, error) {
 }
 
 func UserWrite(fn string, user User) {
-    path := "/home/firebug/go/gobird/src/db/account/"+fn+".json"
+    path := "/home/firebug/go/src/gobird/src/db/account/"+fn+".json"
     data, err := json.Marshal(user)
     if err != nil {
         log.Fatal(err)

@@ -5,39 +5,28 @@ import (
     //"io"
     "io/ioutil"
     "net/http"
-    "../view"
-    "../model"
+    "view"
+    "model"
     "log"
-    //"regexp"
-    //"errors"
-    //"gopkg.in/mgo.v2/bson"
-
-    //"image"
-    //"image/jpeg"
-    //"github.com/disintegration/imaging"
-    //"github.com/gorilla/schema"
-    //"strings"
-    // "strconv"
      mux "github.com/julienschmidt/httprouter"
      "strconv"
      "time"
-
+     "controller/session"
 )
 
 func CreateBlogGet(w http.ResponseWriter, r *http.Request, _ mux.Params) {
     v := view.New(r)
-    v.Name = "write"
-    //view.Repopulate([]string{"class_surface_img","class_title", "class_summary", "class_content","first_tag","secondtag"}, r.Form, v.Data)
-    v.RenderTemplate(w)
-}
+    sess := session.Instance(r)
+    if sess.Values["authenticated"]==1{
+        v.Data["Username"] = sess.Values["username"]
+        v.Name = "write"
+        v.RenderTemplate(w)
+    }else{
+        http.Redirect(w, r, "/login", http.StatusFound)
+        return
+    }
 
-// type Blog struct {
-//     BlogID      string
-//     BlogAuthor  string
-//     BlogTitle   string
-//     BlogContent string
-//     BlogHeat    int
-// }
+}
 
 func CreateBlogPost(w http.ResponseWriter, r *http.Request,_ mux.Params) {
 
@@ -45,6 +34,7 @@ func CreateBlogPost(w http.ResponseWriter, r *http.Request,_ mux.Params) {
     fmt.Println("post")
     //check the title if exist
 
+    sess := session.Instance(r)
 
     r.ParseMultipartForm(32 << 20)
    var blog model.Blog
@@ -61,9 +51,12 @@ func CreateBlogPost(w http.ResponseWriter, r *http.Request,_ mux.Params) {
 
    if err := model.CreateBlog(blog); err != nil {
        log.Println(err)
+       sess.Save(r,w)
+
        //respondWithError(w, http.StatusInternalServerError, err.Error())
        return
    } else {
+       sess.Save(r,w)
        http.Redirect(w, r, "/", http.StatusFound)
        return
    }
@@ -78,7 +71,7 @@ func readfile(path string) string{
 }
 func saveFile(fn string, content string) string {
     data := []byte(content)
-    path := "/home/firebug/go/gobird/src/db/blog/"+fn
+    path := "/home/firebug/go/src/gobird/src/db/blog/"+fn
     ioutil.WriteFile(path, data,0600)
     return path
 }

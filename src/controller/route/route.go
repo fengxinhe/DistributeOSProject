@@ -4,8 +4,9 @@ import (
     "net/http"
     "github.com/julienschmidt/httprouter"
     "github.com/gorilla/context"
-    "../static"
-    "../"
+    "controller/static"
+    "controller"
+    "fmt"
 )
 
 func LoadHTTPS() http.Handler {
@@ -19,7 +20,9 @@ func LoadHTTP() http.Handler {
 func routes() *httprouter.Router {
     router := httprouter.New()
     //router.ServeFiles("/static/*filepath", http.Dir("/home/firebug/goweb/"))
-    router.GET("/home/firebug/go/gobird/static/*filepath",wrapHandler(http.HandlerFunc(static.Static)))
+    router.GET("/home/firebug/go/src/gobird/static/*filepath",wrapHandler(http.HandlerFunc(static.Static)))
+    fmt.Println("cssss sssss")
+
     router.GET("/", controller.IndexGet)
     // router.GET("/classes", wrapHandler(http.HandlerFunc(controller.ClassGet)))
     //
@@ -33,7 +36,7 @@ func routes() *httprouter.Router {
     router.POST("/register",wrapHandler(http.HandlerFunc(controller.RegisterPost)))
     router.GET("/login",wrapHandler(http.HandlerFunc(controller.LoginGet)))
     router.POST("/login",wrapHandler(http.HandlerFunc(controller.LoginPost)))
-
+    router.GET("/logout",wrapHandler(http.HandlerFunc(controller.LogoutGet)))
     //router.GET("/featured/show/:name",controller.ShowProjectGet)
 
 

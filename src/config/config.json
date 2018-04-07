@@ -4,16 +4,28 @@
         "HostName" : "localhost",
         "UseHttp": true,
         "UseHttps": false,
-        "HttpPort": "8400",
-        "HttpsPort": "8400"
+        "HttpPort": "8500",
+        "HttpsPort": "8500"
     },
     "View": {
-        "StaticURL" : "/home/firebug/go/gobird/static/",
+        "StaticURL" : "/home/firebug/go/src/gobird/static/",
         "BaseURI" : "/",
-        "Name" : "blank"
+        "Name" : "blank",
+        "TemplateDir" : "/home/firebug/go/src/gobird/templates/"
     },
     "Static":{
-        "STATIC_URL":"/home/firebug/go/gobird/static/",
-        "STATIC_ROOT":"/home/firebug/go/gobird/static/"
+        "STATIC_URL":"/home/firebug/go/src/gobird/static/",
+        "STATIC_ROOT":"/home/firebug/go/src/gobird/static/"
+    },
+    "Session":{
+		"SecretKey": "@r4B?EThaSEh_drudR7P_hub=s#s2Pah",
+		"Name": "gosess",
+		"Options": {
+			"Path": "/",
+			"Domain": "",
+			"MaxAge": 28800,
+			"Secure": false,
+			"HttpOnly": true
+		}
     }
 }

@@ -10,8 +10,6 @@ import (
     "github.com/oxtoacart/bpool"
 )
 
-const STATIC_URL string = "/home/firebug/go/gobird/static/"
-
 var templates map[string]*template.Template
 var bufpool *bpool.BufferPool
 var mainTmpl = `{{define "main"}} {{template "base" .}} {{end}}`
@@ -23,7 +21,8 @@ func init(){
     if templates == nil {
         templates = make(map[string]*template.Template)
     }
-    templatesDir := "/home/firebug/go/gobird/templates/"
+    templatesDir := "/home/firebug/go/src/gobird/templates/"
+    //templatesDir := viewInfo.TemplateDir
     layoutFiles, err := filepath.Glob(templatesDir + "layouts/*.tmpl")
     if err != nil {
         log.Fatal(err)
@@ -55,6 +54,7 @@ func init(){
 type View struct {
     BaseURI string
     StaticURL string
+    TemplateDir string
     Name string
     Data map[string]interface{}
     request *http.Request

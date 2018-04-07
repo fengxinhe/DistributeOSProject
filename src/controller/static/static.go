@@ -26,6 +26,7 @@ func GetInfo() string{
 func Static(w http.ResponseWriter, req *http.Request) {
     static_file := req.URL.Path[len(staticinfo.STATIC_URL):]
     if len(static_file) != 0 {
+
         f, err := http.Dir(staticinfo.STATIC_ROOT).Open(static_file)
         if err == nil {
             content := io.ReadSeeker(f)

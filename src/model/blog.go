@@ -17,7 +17,7 @@ type Blog struct {
 
 func CreateBlog(blog Blog) error{
 
-    path:= "/home/firebug/go/gobird/src/db/blog/"+blog.BlogID+"-"+blog.BlogTitle+".json"
+    path:= "/home/firebug/go/src/gobird/src/db/blog/"+blog.BlogID+"-"+blog.BlogTitle+".json"
     data, err := json.Marshal(blog)
     if err != nil {
         log.Fatal(err)
@@ -38,13 +38,11 @@ func BlogUnmarshal(data []byte) *Blog{
 }
 
 func GetBlogs() (*[]Blog){
-    files, _ := ioutil.ReadDir("/home/firebug/go/gobird/src/db/blog/")
+    files, _ := ioutil.ReadDir("/home/firebug/go/src/gobird/src/db/blog/")
     var blogs []Blog
 
     for _, file := range files {
-
-        fmt.Println("indexxxxxxx")
-        data, _:= ioutil.ReadFile("/home/firebug/go/gobird/src/db/blog/"+file.Name())
+        data, _:= ioutil.ReadFile("/home/firebug/go/src/gobird/src/db/blog/"+file.Name())
         blogs=append(blogs,*BlogUnmarshal(data))
     }
     return &blogs
@@ -56,7 +54,7 @@ func readfile(path string) string{
 }
 func saveFile(fn string, content string) string {
     data := []byte(content)
-    path := "/home/firebug/go/gobird/src/db/blog/"+fn
+    path := "/home/firebug/go/src/gobird/src/db/blog/"+fn
     ioutil.WriteFile(path, data,0600)
     return path
 }
