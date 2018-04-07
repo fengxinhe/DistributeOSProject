@@ -22,7 +22,7 @@ func LoginGet(w http.ResponseWriter, r *http.Request) {
 //	sess := session.Instance(r)
 
 	// Display the view
-	//sess := session.Instance(r)
+	sess := session.Instance(r)
 	v := view.New(r)
 	v.Name = "login"
 	if sess.Values["authenticated"]==1{

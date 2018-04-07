@@ -14,7 +14,7 @@ import (
 // RegisterGET displays the register page
 func RegisterGet(w http.ResponseWriter, r *http.Request) {
 	// Get session
-//	sess := session.Instance(r)
+	sess := session.Instance(r)
 
 	// Display the view
 	v := view.New(r)
