@@ -17,7 +17,7 @@ type Blog struct {
 
 func CreateBlog(blog Blog) error{
 
-    path:= "/home/firebug/go/src/gobird/src/db/blog/"+blog.BlogID+"-"+blog.BlogTitle+".json"
+    path:= "/home/firebug/go/src/gobird/src/db/blog/"+blog.BlogID+".json"
     data, err := json.Marshal(blog)
     if err != nil {
         log.Fatal(err)
@@ -57,4 +57,12 @@ func saveFile(fn string, content string) string {
     path := "/home/firebug/go/src/gobird/src/db/blog/"+fn
     ioutil.WriteFile(path, data,0600)
     return path
+}
+func ModifyHeat(id string, like int){
+    path:= "/home/firebug/go/src/gobird/src/db/blog/"+id+".json"
+    data,_ := ioutil.ReadFile(path)
+    blog:=BlogUnmarshal(data)
+    blog.BlogHeat+=like
+    data,_=json.Marshal(blog)
+    ioutil.WriteFile(path, data,0600)
 }

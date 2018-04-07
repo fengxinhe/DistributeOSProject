@@ -40,8 +40,8 @@ func CreateBlogPost(w http.ResponseWriter, r *http.Request,_ mux.Params) {
    var blog model.Blog
    blog.BlogID = strconv.FormatInt(time.Now().UnixNano(),10)
    blog.BlogTitle = r.FormValue("blog_title")
-   blog.BlogAuthor="aa"
-   blog.BlogHeat = 10
+   blog.BlogAuthor=sess.Values["username"].(string)
+   blog.BlogHeat = 0
 
    var temp=r.FormValue("summernotecode")
    fmt.Println(temp)

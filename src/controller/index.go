@@ -1,7 +1,7 @@
 package controller
 
 import (
-    //"fmt"
+    "fmt"
     //"io/ioutil"
     "net/http"
     "view"
@@ -10,6 +10,7 @@ import (
     //"errors"
     mux "github.com/julienschmidt/httprouter"
     "controller/session"
+    "github.com/gorilla/schema"
 )
 
 func IndexGet(w http.ResponseWriter, r *http.Request,_ mux.Params) {
@@ -24,4 +25,23 @@ func IndexGet(w http.ResponseWriter, r *http.Request,_ mux.Params) {
     }
     v.RenderTemplate(w)
     return
+}
+type likeBook struct{
+    Id  string
+    Like  int
+}
+func LikeHandler(w http.ResponseWriter, r *http.Request,_ mux.Params) {
+    //sess :=session.Instance(r)
+    err:=r.ParseForm()
+    if err != nil {
+        fmt.Println("ajax data error")
+    }
+    var lb likeBook
+    var decoder = schema.NewDecoder()
+    err = decoder.Decode(&lb, r.PostForm)
+    if err!=nil{
+        fmt.Println("decode fail!")
+    }
+    fmt.Println(lb)
+    model.ModifyHeat(lb.Id,lb.Like)
 }

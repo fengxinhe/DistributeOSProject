@@ -38,6 +38,7 @@ func routes() *httprouter.Router {
     router.POST("/login",wrapHandler(http.HandlerFunc(controller.LoginPost)))
     router.GET("/logout",wrapHandler(http.HandlerFunc(controller.LogoutGet)))
     //router.GET("/featured/show/:name",controller.ShowProjectGet)
+    router.POST("/likehandler",controller.LikeHandler)
 
 
     return router
