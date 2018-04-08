@@ -1,16 +1,17 @@
 {{define "Title"}} index {{end}}
 {{define "content"}}
+
 <div id="portfolio" class="container">
 <div id="projects">
         <p><strong>Blogs</strong></p>
 		{{ range .Blogs }}
 		<div class="blogcontanier">
 			<div class="blogbox">
-				<h3>Title: {{.BlogTitle}} Author: {{.BlogAuthor}} Heat: {{.BlogHeat}}</h3>
+				<h3>Title: {{.BlogTitle}} Author: {{.BlogAuthor}}</h3>
                 <textarea contenteditable="false" class="summernote" name="summernote"> {{.BlogContent}}</textarea>
 
 			</div>
-                <p><input id={{.BlogID}} type="button" value="like" class="btn"/></p>
+                <p><input id={{.BlogID}} type="button" value="like" class="btn"/>{{.BlogHeat}}</p>
 		</div>
 		{{end}}
 	</div>
