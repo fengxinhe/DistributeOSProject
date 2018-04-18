@@ -3,7 +3,7 @@ package services
 import (
     "golang.org/x/net/websocket"
     "net/rpc/jsonrpc"
-    "log"
+    //"log"
     "fmt"
 )
 
@@ -15,15 +15,10 @@ func PushHandler(ws *websocket.Conn) {
     var id int
     c := jsonrpc.NewClient(ws)
 
-    err := c.Call("User.Getpsd", nil, &id)
-    if err != nil {
-        log.Print("User.Getid error:", err)
-        return
-    } else {
-        fmt.Println("websocket")
-        NotifyHandler(ws)
-        User.Client[id] = c;
-        User.Mutex[id].Lock()
-    }
+    fmt.Println("websocket")
+    NotifyHandler(ws)
+    User.Client[id] = c;
+    User.Mutex[id].Lock()
+
 
 }

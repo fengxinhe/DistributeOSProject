@@ -68,8 +68,8 @@ jsonrpc.Register = function(method, func){
 
 jsonrpc.onservermessage = function(e) {
 
-    if (e.data=="hhh") {
-        handleMessage()
+    if (typeof e.data==='string') {
+        handleMessage(e.data)
         return
     }
     var server = e.originalTarget.parrent;

@@ -29,6 +29,8 @@ var UserStatus = map[string]int{
     "aaa": 0,
     "bbb": 0,
 }
+var User = new(UserInfo)
+
 func findUserID(name string) int{
         for i, val := range UserList{
             if val==name{
@@ -78,5 +80,3 @@ func (u *UserInfo) Signup (args *Users, id *int) error {
     //u.Mutex[*id].Lock()
     return nil
 }
-
-var User = new(UserInfo)

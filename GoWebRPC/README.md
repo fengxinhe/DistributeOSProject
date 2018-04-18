@@ -1,3 +1,5 @@
-#Webrpc
+Basic blogging website
 
-[JSON-RPC](http://json-rpc.org/) protocol over [WebSocket](http://www.websocket.org/).
+Reference:
+[JSON-RPC](http://json-rpc.org/)
+[WebSocket](http://www.websocket.org/).

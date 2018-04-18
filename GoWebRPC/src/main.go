@@ -10,11 +10,11 @@ import (
 
 func main() {
     port := flag.String("port", ":8010", "http service address")
-    htdocs := flag.String("../htdocs", "../htdocs", "http dir")
+    htdocs := flag.String("../client", "../client", "http dir")
     flag.Parse()
 
     rpc.Register(services.User)
-    //rpc.Register(new(services.Register))
+    rpc.Register(services.Blog)
     rpc.Register(new(services.Arith))
     go services.H.Run()
     http.Handle("/jsonrpc", websocket.Handler(services.JsonrpcHandler))

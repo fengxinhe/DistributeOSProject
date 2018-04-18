@@ -33,7 +33,7 @@ func (h *hub) Run() {
         case m := <-h.broadcast:
             fmt.Println(m)
             for c := range h.connections {
-                fmt.Println("rangggg")
+                fmt.Println("hub write...")
                 select {
                 case c.send <- m:
                 default:
