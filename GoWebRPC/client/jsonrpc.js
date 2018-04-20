@@ -68,10 +68,18 @@ jsonrpc.Register = function(method, func){
 
 jsonrpc.onservermessage = function(e) {
 
-    if (typeof e.data==='string') {
-        handleMessage(e.data)
-        return
-    }
+
+    tmp=e.data
+    try{
+        if (typeof JSON.parse(tmp) == "object") {
+            //console.log(tmp)
+        }
+     } catch(e) {
+         //console.log(tmp)
+         handleMessage(tmp);
+         return
+     }
+
     var server = e.originalTarget.parrent;
     d = JSON.parse(e.data, function (key, value) {
         var type;

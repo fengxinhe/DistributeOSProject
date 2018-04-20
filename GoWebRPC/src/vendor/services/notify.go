@@ -3,6 +3,8 @@ package services
 import (
     "golang.org/x/net/websocket"
     "fmt"
+    "log"
+    // "encoding/json"
 )
 
 type connection struct {
@@ -12,9 +14,13 @@ type connection struct {
     // Buffered channel of outbound messages.
     send chan string
 }
-type message struct {
-    method   string  `json:"method"`
-    like     int    `json:"like"`
+
+
+type Message struct {
+    Method   string   `json:"method"`
+    BlogID     int    `json:"blogid"`
+    Content  string    `json:"content"`
+    Like     int       `json:"like"`
 }
 func (c *connection) reader() {
     for {
@@ -32,8 +38,11 @@ func (c *connection) reader() {
 func (c *connection) writer() {
     for message := range c.send {
         fmt.Println("wwwwwwwwwwww")
+        fmt.Println(message)
+
         err := websocket.Message.Send(c.ws, message)
-        if err != nil {
+        if err != nil{
+            log.Print("socket send error:", err)
             break
         }
     }
@@ -54,10 +63,9 @@ func (c *connection) writer() {
 // }
 
 func NotifyHandler(ws *websocket.Conn) {
-    c := &connection{send: make(chan string, 256), ws: ws}
-    fmt.Println("dddddddddd")
+    c := &connection{send: make(chan string, 100), ws: ws}
+    fmt.Println("NotifyHandler")
     H.register <- c
-    //H.broadcast <- "sss"
     defer func() { H.unregister <- c }()
     go c.writer()
     c.reader()

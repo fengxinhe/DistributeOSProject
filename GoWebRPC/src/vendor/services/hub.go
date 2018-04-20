@@ -31,7 +31,7 @@ func (h *hub) Run() {
             delete(h.connections, c)
             close(c.send)
         case m := <-h.broadcast:
-            fmt.Println(m)
+            //fmt.Println(m)
             for c := range h.connections {
                 fmt.Println("hub write...")
                 select {

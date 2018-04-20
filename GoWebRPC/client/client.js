@@ -7,7 +7,6 @@ $(function() {
     rpc.ws.onopen = function(){
 
     };
-
     rpc.ws.addEventListener("message", function(event) {
 
         var data = event.data;
@@ -45,12 +44,19 @@ $(function() {
             params: new Array(largs),
             success: function(result){
                 id = result;
-                console.log(id)
                 if(id!=-1){
                     msg.prepend("<li>id: " + result + "</li>");
                     $('#userform').hide();
                     push = jsonrpc.NewServer("ws://"+window.location.host+"/push");
-                    msghand=jsonrpc.NewServer("ws://"+window.location.host+"/notify");
+                    //msghandler = jsonrpc.NewServer("ws://"+window.location.host+"/notify");
+                    console.log(id)
+
+                    push.Register('User.Getpsd', function(parmars){
+                                    return {
+                                        result: id,
+                                        error: null
+                                    };
+                                });
                     push.Connect();
                 }
             },
@@ -59,7 +65,24 @@ $(function() {
             }
         });
     });
+    $('#signout').click(function(){
+        var largs = {};
+        largs.Username = $('#username').val();
+        largs.Psd = parseInt($('#psd').val());
+        rpc.Call({
+            method: "UserInfo.Signout",
+            params: new Array(largs),
+            success: function(result){
+                push.Close()
+                $('#userform').show()
+                msg.prepend("<li>rpc signout successfully</li>");
+            },
+            error: function(error){
 
+            }
+        });
+        //push.Close();
+    });
     $('#send').click(function(){
         var args = {};
         args.Content = $('#blog').val();

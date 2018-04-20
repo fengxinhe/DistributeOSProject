@@ -22,7 +22,7 @@ func (t *Arith) Multiply(args *Args, reply *int) error {
     //     method: "broadcast",
     //     like:   3,
     // }
-    H.broadcast <- "hhh"
+    //H.broadcast <- "hhh"
     return nil
 }
 

@@ -22,6 +22,12 @@ func (b *BlogInfo) AddBlog(args *Blogs, reply *int) error {
      HeatDB[b.Id]=args.Heat
      *reply=b.Id
      msg:="addblog"+" "+strconv.Itoa(b.Id)+" "+args.Content+" "+strconv.Itoa(args.Heat)
+    // mmsg := Message{
+    //     Method: "addblog",
+    //     BlogID: b.Id,
+    //     Content: args.Content,
+    //     Like : args.Heat,
+    // }
      H.broadcast <- msg
      b.Id++
      return nil
