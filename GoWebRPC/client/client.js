@@ -7,11 +7,11 @@ $(function() {
     rpc.ws.onopen = function(){
 
     };
-    rpc.ws.addEventListener("message", function(event) {
-
-        var data = event.data;
-        //console.log(data)
-    });
+    // rpc.ws.onmessage=function({
+    //
+    //     var data = event.data;
+    //     console.log(data)
+    // });
 
     $('#register').click(function(){
         var largs = {};
@@ -58,6 +58,7 @@ $(function() {
                                     };
                                 });
                     push.Connect();
+                    $('#send').show();
                 }
             },
             error: function(error){
@@ -73,8 +74,9 @@ $(function() {
             method: "UserInfo.Signout",
             params: new Array(largs),
             success: function(result){
-                push.Close()
-                $('#userform').show()
+                push.Close();
+                $('#userform').show();
+                $('#send').hide();
                 msg.prepend("<li>rpc signout successfully</li>");
             },
             error: function(error){
@@ -85,6 +87,7 @@ $(function() {
     });
     $('#send').click(function(){
         var args = {};
+        args.Author = $('#username').val();
         args.Content = $('#blog').val();
         //console.log(args.Content)
         args.Heat=0
@@ -101,24 +104,47 @@ $(function() {
         });
     });
 
-    $('#multiply').click(function(){
-        var args = {};
-        args.A = parseInt($('#A').val());
-        args.B = parseInt($('#B').val());
-        $('#A').val(args.A);
-        $('#B').val(args.B);
-        args.id = id;
-        rpc.Call({
-            method: "Arith.Multiply",
-            params: new Array(args),
-            success: function(result){
-                $('#multiply-result').val(result);
-            },
-            error: function(error){
-                msg.prepend("<li>rpc error: " + error + "</li>");
-                $('#multiply-result').val("0.0");
-            }
-        });
+    document.getElementById('blog-list').addEventListener('click', function (e) {
+            //console.log(e.target.nodeName);
+          if (e.target.nodeName == "BUTTON") {
+
+              var btnid= e.target.id;
+              console.log(e.target.value);
+              var like=e.target.value;
+              if(like=="like"){
+                  //islike=1;
+                 e.target.value="dislike";
+                 //$(e.target).text("dislike")
+                 $(e.target).children().text("1")
+              }else {
+                  //islike=-1;
+                 // $(e.target).text("like")
+                  $(e.target).children().text("0")
+                  e.target.value="like";
+              }
+          }
     });
+
+    $("#deed").on("click",function(){
+        var dataid=$(this).attr("id");
+        console.log(dataid);
+        var like=$(this).attr("value");
+
+        var islike=0;
+        if(like=="like"){
+            islike=1;
+            $(this).attr("value","dislike");
+        }else {
+            islike=-1;
+            $(this).attr("value","like");
+        }
+        var data = {
+            id: dataid,
+            like: islike
+        };
+
+
+});
+
 
 });

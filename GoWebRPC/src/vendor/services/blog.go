@@ -10,6 +10,7 @@ type BlogInfo struct{
 
 }
 type Blogs struct {
+    Author  string
     Content string
     Heat    int
 }
@@ -21,7 +22,7 @@ func (b *BlogInfo) AddBlog(args *Blogs, reply *int) error {
      BlogDB[b.Id]=args.Content
      HeatDB[b.Id]=args.Heat
      *reply=b.Id
-     msg:="addblog"+" "+strconv.Itoa(b.Id)+" "+args.Content+" "+strconv.Itoa(args.Heat)
+     msg:="addblog"+" "+strconv.Itoa(b.Id)+" "+args.Author+" "+args.Content+" "+strconv.Itoa(args.Heat)
     // mmsg := Message{
     //     Method: "addblog",
     //     BlogID: b.Id,

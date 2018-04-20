@@ -10,6 +10,7 @@ type UserInfo struct {
     Id int
     Client [32]*rpc.Client
     Mutex  [32]sync.Mutex
+    SocketClient  [32]*connection
 }
 type Users struct {
     Username    string
@@ -64,7 +65,7 @@ func (u *UserInfo) Signup (args *Users, id *int) error {
         fmt.Println(UserStatus[args.Username])
         if UserStatus[args.Username]==0{
             *id=userid
-            //u.Client[userid] = c
+            //u.SocketClient[userid] = c
             //u.Mutex[userid].Lock()
             UserStatus[args.Username]=1
             //u.Mutex[*id].Lock()
@@ -83,8 +84,7 @@ func (u *UserInfo) Signout (args *Users, success *int) error {
         fmt.Printf("signout handler%d\n", userid)
         u.Mutex[userid].Unlock()
         UserStatus[args.Username]=0
-
-        u.Client[userid].Close()
+        //u.Client[userid].Close()
         //u.Mutex[*id].Lock()
     }else{
         *success=-1
