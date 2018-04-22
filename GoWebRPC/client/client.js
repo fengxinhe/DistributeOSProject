@@ -45,8 +45,10 @@ $(function() {
             success: function(result){
                 id = result;
                 if(id!=-1){
-                    msg.prepend("<li>id: " + result + "</li>");
+                    //msg.prepend("<li>id: " + result + "</li>");
+
                     $('#userform').hide();
+                    $("#welcome").text("Welcome, "+largs.Username+"!");
                     push = jsonrpc.NewServer("ws://"+window.location.host+"/push");
                     //msghandler = jsonrpc.NewServer("ws://"+window.location.host+"/notify");
                     console.log(id)
@@ -58,6 +60,7 @@ $(function() {
                                     };
                                 });
                     push.Connect();
+                    $('#signout').show();
                     $('#send').show();
                 }
             },
@@ -77,7 +80,9 @@ $(function() {
                 push.Close();
                 $('#userform').show();
                 $('#send').hide();
-                msg.prepend("<li>rpc signout successfully</li>");
+                $('#signout').hide();
+                $("#welcome").text("Welcome, guest!");
+                //msg.prepend("<li>rpc signout successfully</li>");
             },
             error: function(error){
 
@@ -90,7 +95,7 @@ $(function() {
         args.Author = $('#username').val();
         args.Content = $('#blog').val();
         //console.log(args.Content)
-        args.Heat=0
+        //args.Heat=0
         rpc.Call({
             method: "BlogInfo.AddBlog",
             params: new Array(args),
@@ -107,44 +112,38 @@ $(function() {
     document.getElementById('blog-list').addEventListener('click', function (e) {
             //console.log(e.target.nodeName);
           if (e.target.nodeName == "BUTTON") {
+              var args = {};
+              args.Id=parseInt(e.target.id);
 
-              var btnid= e.target.id;
               console.log(e.target.value);
               var like=e.target.value;
               if(like=="like"){
-                  //islike=1;
+                  args.Num=1;
                  e.target.value="dislike";
+                 e.target.style.backgroundColor='Tomato';
                  //$(e.target).text("dislike")
-                 $(e.target).children().text("1")
+                // $(e.target).children().text("1")
               }else {
-                  //islike=-1;
+                  args.Num=-1;
                  // $(e.target).text("like")
-                  $(e.target).children().text("0")
+                  //$(e.target).children().text("0")
+                  e.target.style.backgroundColor='MediumSeaGreen';
                   e.target.value="like";
               }
+              rpc.Call({
+                  method: "LikeInfo.LikeHandler",
+                  params: new Array(args),
+                  success: function(result){
+                      blogid=result;
+                  },
+                  error: function(error){
+                      msg.prepend("<li>like error: " + error + "</li>");
+                      $('#divide-result').val("0 ......0");
+                  }
+              });
+
           }
     });
-
-    $("#deed").on("click",function(){
-        var dataid=$(this).attr("id");
-        console.log(dataid);
-        var like=$(this).attr("value");
-
-        var islike=0;
-        if(like=="like"){
-            islike=1;
-            $(this).attr("value","dislike");
-        }else {
-            islike=-1;
-            $(this).attr("value","like");
-        }
-        var data = {
-            id: dataid,
-            like: islike
-        };
-
-
-});
 
 
 });

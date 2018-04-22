@@ -10,6 +10,8 @@
 
     </head>
     <body>
+        <h2><div id="welcome">Welcome, guest!</div></h2>
+
         <div id="userform">
             Username: <input id="username" type="text" />
             Password: <input id="psd" type="text" />
@@ -17,17 +19,13 @@
             <input type="button" id="register" value="register"></input>
 
         </div>
-        <input type="button" id="signout" value="signout"></input>
+        <input type="button" id="signout" value="signout" style="display: none;"></input>
+        <br>
         <ul id="msg-list"></ul>
-
-        <br>
-        Blog: <input id="blog" type="text" />
-        <br>
-        <input type="button" id="send" value="send"></input>
-        <input type="button" id="test" value="test"></input>
-
-
         <div id="blog-list"></div>
-
+        <br>
+        Editor <input id="blog" type="text" />
+        <input type="button" id="send" value="send"></input>
+        <br>
     </body>
 </html>

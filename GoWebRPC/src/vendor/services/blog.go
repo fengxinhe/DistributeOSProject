@@ -3,33 +3,31 @@ package services
 import(
     //"errors"
     "strconv"
+    "sync"
+    "sync/atomic"
 )
 
 type BlogInfo struct{
-    Id  int
+    Id  uint64
 
 }
 type Blogs struct {
     Author  string
     Content string
-    Heat    int
+//    Heat    int
 }
-
+var blogmutex = &sync.Mutex{}
 var Blog = new(BlogInfo)
 var BlogDB = make(map[int]string)
-var HeatDB = make(map[int]int)
 func (b *BlogInfo) AddBlog(args *Blogs, reply *int) error {
-     BlogDB[b.Id]=args.Content
-     HeatDB[b.Id]=args.Heat
-     *reply=b.Id
-     msg:="addblog"+" "+strconv.Itoa(b.Id)+" "+args.Author+" "+args.Content+" "+strconv.Itoa(args.Heat)
-    // mmsg := Message{
-    //     Method: "addblog",
-    //     BlogID: b.Id,
-    //     Content: args.Content,
-    //     Like : args.Heat,
-    // }
+     blogmutex.Lock()
+     BlogDB[int(b.Id)]=args.Content
+     LikeDB[int(b.Id)]=0
+     *reply=int(b.Id)
+     msg:="addblog"+" "+strconv.Itoa(int(b.Id))+" "+args.Author+" "+args.Content
      H.broadcast <- msg
-     b.Id++
+     //b.Id++
+     atomic.AddUint64(&b.Id, 1)
+     blogmutex.Unlock()
      return nil
 }

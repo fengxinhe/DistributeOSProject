@@ -31,6 +31,7 @@ var UserStatus = map[string]int{
     "bbb": 0,
 }
 var User = new(UserInfo)
+var usermutex = &sync.Mutex{}
 
 func findUserID(name string) int{
         for i, val := range UserList{
@@ -41,37 +42,40 @@ func findUserID(name string) int{
         return -1
 }
 func (u *UserInfo) Register (args *Users, id *int) error {
+    usermutex.Lock()
     if -1 != findUserID(args.Username){
         *id=-1
+        usermutex.Unlock()
         return nil
     }
     UserList=append(UserList, args.Username)
     UserDB[args.Username]=args.Psd
     UserStatus[args.Username]=0
     *id=1
+    usermutex.Unlock()
     return nil
 }
 func (u *UserInfo) Signup (args *Users, id *int) error {
     //*id = u.Id
 
     //fmt.Println(args.Psd)
+    usermutex.Lock()
     if args.Psd != UserDB[args.Username]{
         fmt.Println("error user psd")
         *id=-1
+        usermutex.Unlock()
         return nil
     }
 
-        userid:=findUserID(args.Username)
-        fmt.Println(UserStatus[args.Username])
-        if UserStatus[args.Username]==0{
-            *id=userid
-            //u.SocketClient[userid] = c
-            //u.Mutex[userid].Lock()
-            UserStatus[args.Username]=1
-            //u.Mutex[*id].Lock()
-        }else{
-            *id=-1
-        }
+    userid:=findUserID(args.Username)
+    fmt.Println(UserStatus[args.Username])
+    if UserStatus[args.Username]==0{
+    *id=userid
+    UserStatus[args.Username]=1
+    }else{
+        *id=-1
+    }
+    usermutex.Unlock()
     fmt.Printf("signin handler%d\n", userid)
     return nil
 }
@@ -84,8 +88,6 @@ func (u *UserInfo) Signout (args *Users, success *int) error {
         fmt.Printf("signout handler%d\n", userid)
         u.Mutex[userid].Unlock()
         UserStatus[args.Username]=0
-        //u.Client[userid].Close()
-        //u.Mutex[*id].Lock()
     }else{
         *success=-1
     }

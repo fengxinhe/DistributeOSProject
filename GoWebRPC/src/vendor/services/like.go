@@ -3,6 +3,8 @@ package services
 import(
     //"errors"
     "strconv"
+    "fmt"
+    "sync"
 )
 
 type LikeInfo struct{
@@ -13,14 +15,24 @@ type Likes struct {
     Num int
     Id  int
 }
-
 var Like = new(LikeInfo)
-var LikeDB = make(map[int]string)
-func (like *LikeInfo) LikeHandler(args *Likes, reply *int) error {
+var LikeDB = make(map[int]int)
+var likemutex = &sync.Mutex{}
 
-     msg:="likeChange"+" "+strconv.Itoa(like.Id)+" "+strconv.Itoa(args.Num)+" "+strconv.Itoa(args.Id)
-    
+func (like *LikeInfo) LikeHandler(args *Likes, reply *int) error {
+    fmt.Println("LikeHandler")
+    likemutex.Lock()
+    if args.Num==1 {
+        LikeDB[args.Id]+=1
+        *reply=LikeDB[args.Id]
+    }else if args.Num==-1{
+        LikeDB[args.Id]-=1
+        *reply=LikeDB[args.Id]
+    }else {
+        fmt.Println("like error")
+    }
+     msg:="modifylike"+" "+strconv.Itoa(args.Id)+" "+strconv.Itoa(LikeDB[args.Id])
      H.broadcast <- msg
-     like.Id++
+     likemutex.Unlock()
      return nil
 }

@@ -15,6 +15,7 @@ func main() {
 
     rpc.Register(services.User)
     rpc.Register(services.Blog)
+    rpc.Register(services.Like)
     rpc.Register(new(services.Arith))
     go services.H.Run()
     http.Handle("/jsonrpc", websocket.Handler(services.JsonrpcHandler))
