@@ -55,7 +55,7 @@ func (u *UserInfo) Register (args *Users, id *int) error {
     usermutex.Unlock()
     return nil
 }
-func (u *UserInfo) Signup (args *Users, id *int) error {
+func (u *UserInfo) Signin (args *Users, id *int) error {
     //*id = u.Id
 
     //fmt.Println(args.Psd)
@@ -63,20 +63,22 @@ func (u *UserInfo) Signup (args *Users, id *int) error {
     if args.Psd != UserDB[args.Username]{
         fmt.Println("error user psd")
         *id=-1
-        usermutex.Unlock()
-        return nil
-    }
-
-    userid:=findUserID(args.Username)
-    fmt.Println(UserStatus[args.Username])
-    if UserStatus[args.Username]==0{
-    *id=userid
-    UserStatus[args.Username]=1
+        //usermutex.Unlock()
+        //return nil
     }else{
-        *id=-1
+
+        userid:=findUserID(args.Username)
+        fmt.Println(UserStatus[args.Username])
+        if UserStatus[args.Username]==0{
+            *id=userid
+            UserStatus[args.Username]=1
+        }else{
+            *id=-1
+        }
     }
     usermutex.Unlock()
-    fmt.Printf("signin handler%d\n", userid)
+
+    //fmt.Printf("signin handler%d\n", userid)
     return nil
 }
 func (u *UserInfo) Signout (args *Users, success *int) error {

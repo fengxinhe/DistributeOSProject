@@ -40,7 +40,7 @@ $(function() {
         largs.Psd = parseInt($('#psd').val());
 
         rpc.Call({
-            method: "UserInfo.Signup",
+            method: "UserInfo.Signin",
             params: new Array(largs),
             success: function(result){
                 id = result;

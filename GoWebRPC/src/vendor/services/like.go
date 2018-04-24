@@ -30,6 +30,7 @@ func (like *LikeInfo) LikeHandler(args *Likes, reply *int) error {
         *reply=LikeDB[args.Id]
     }else {
         fmt.Println("like error")
+        return nil
     }
      msg:="modifylike"+" "+strconv.Itoa(args.Id)+" "+strconv.Itoa(LikeDB[args.Id])
      H.broadcast <- msg

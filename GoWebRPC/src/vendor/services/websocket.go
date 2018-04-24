@@ -8,7 +8,7 @@ import (
 )
 
 func JsonrpcHandler(ws *websocket.Conn) {
-    jsonrpc.ServeConn(ws)
+     jsonrpc.ServeConn(ws)
 }
 
 func PushHandler(ws *websocket.Conn) {
