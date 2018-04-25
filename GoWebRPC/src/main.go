@@ -18,9 +18,9 @@ func main() {
     rpc.Register(services.Like)
     rpc.Register(new(services.Arith))
     go services.H.Run()
-    go http.Handle("/jsonrpc", websocket.Handler(services.JsonrpcHandler))
-    go http.Handle("/notify", websocket.Handler(services.NotifyHandler))
-    go http.Handle("/push", websocket.Handler(services.PushHandler))
+    http.Handle("/jsonrpc", websocket.Handler(services.JsonrpcHandler))
+    http.Handle("/notify", websocket.Handler(services.NotifyHandler))
+    http.Handle("/push", websocket.Handler(services.PushHandler))
     http.Handle("/", http.FileServer(http.Dir(*htdocs)))
     err := http.ListenAndServe(*port, nil)
     if err != nil {
