@@ -14,13 +14,9 @@ type connection struct {
     // Buffered channel of outbound messages.
     send chan string
 }
-
-
-type Message struct {
-    Method   string   `json:"method"`
-    BlogID     int    `json:"blogid"`
-    Content  string    `json:"content"`
-    Like     int       `json:"like"`
+type SocketMsg struct{
+    Id  int
+    WS		*websocket.Conn
 }
 func (c *connection) reader() {
     for {
@@ -49,19 +45,23 @@ func (c *connection) writer() {
     c.ws.Close()
 }
 
-// func (c *connection) writetoall() {
-//     for message := range c.send {
-//         for client := range h.connections {
-//
-//         err := websocket.Message.Send(client.ws, message)
-//         if err != nil {
-//             break
-//         }
-//     }
-//     }
-//     c.ws.Close()
-// }
+func seperateWriter(ws *websocket.Conn,msg string) {
+    //for {
+        fmt.Println("wwwwwwwwwwww")
+        fmt.Println(msg)
+        err := websocket.Message.Send(ws, msg)
+        if err != nil{
+            log.Print("socket send error:", err)
+            ws.Close()
+        }
+    //}
 
+}
+
+func AddSocketConnection(ws *websocket.Conn, id int){
+    sm := SocketMsg{Id:id, WS:ws}
+    H.socketregister <- sm
+}
 func NotifyHandler(ws *websocket.Conn) {
     c := &connection{send: make(chan string, 100), ws: ws}
     fmt.Println("NotifyHandler")

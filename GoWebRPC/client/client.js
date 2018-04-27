@@ -3,16 +3,38 @@ $(function() {
     var msg = $('#msg-list');
     var rpc = jsonrpc.NewClient("ws://"+window.location.host+"/jsonrpc");
     var push;
+    var memberlist=$('#user-list');
+    var membernum=0;
+    var username="";
 
     rpc.ws.onopen = function(){
+        // var largs = {};
+        // largs.Username = "";
+        // largs.Psd = 0;
+        // rpc.Call({
+        //     method:"UserInfo.GetMember",
+        //     params: new Array(largs),
+        //     success: function(result){
+        //         //memberlist.append(result);
+        //         generateMemberList(result);
+        //     },
+        //     error: function(error){
+        //         msg.prepend("<li>Get member error: " + error + "</li>");
+        //     }
+        // });
 
     };
-    // rpc.ws.onmessage=function({
-    //
-    //     var data = event.data;
-    //     console.log(data)
-    // });
+    function generateMemberList(list){
 
+
+        for (i=0;i<list.length;i++){
+            if(list[i]!="me"){
+                var m='<div class="member"> <strong>'+list[i]+'</strong>'+
+                '<button class="button follow" id="'+list[i]+'" value="follow">follow</button></div>';
+                memberlist.append(m);
+            }
+        }
+    }
     $('#register').click(function(){
         var largs = {};
         largs.Username = $('#username').val();
@@ -46,7 +68,7 @@ $(function() {
                 id = result;
                 if(id!=-1){
                     //msg.prepend("<li>id: " + result + "</li>");
-
+                    username=$('#username').val();
                     $('#userform').hide();
                     $("#welcome").text("Welcome, "+largs.Username+"!");
                     push = jsonrpc.NewServer("ws://"+window.location.host+"/push");
@@ -62,6 +84,22 @@ $(function() {
                     push.Connect();
                     $('#signout').show();
                     $('#send').show();
+
+                    var args = {};
+                    args.Username = username;
+                    args.Psd = id;
+                    rpc.Call({
+                        method:"UserInfo.GetMember",
+                        params: new Array(args),
+                        success: function(result){
+                            //memberlist.append(result);
+                            memberlist.empty();
+                            generateMemberList(result);
+                        },
+                        error: function(error){
+                            msg.prepend("<li>Get member error: " + error + "</li>");
+                        }
+                    });
                 }
             },
             error: function(error){
@@ -71,7 +109,7 @@ $(function() {
     });
     $('#signout').click(function(){
         var largs = {};
-        largs.Username = $('#username').val();
+        largs.Username = username;
         largs.Psd = parseInt($('#psd').val());
         rpc.Call({
             method: "UserInfo.Signout",
@@ -83,12 +121,13 @@ $(function() {
                 $('#signout').hide();
                 $("#welcome").text("Welcome, guest!");
                 //msg.prepend("<li>rpc signout successfully</li>");
+                push.Close();
             },
             error: function(error){
 
             }
         });
-        //push.Close();
+        jsonrpc.Close();
     });
     $('#send').click(function(){
         var args = {};
@@ -143,6 +182,38 @@ $(function() {
               });
 
           }
+    });
+
+    document.getElementById('user-list').addEventListener('click', function (e) {
+        if (e.target.nodeName == "BUTTON") {
+            var args = {};
+            args.UserId=id;
+            args.InterestId=e.target.id;
+            console.log(args.UserId);
+            console.log(args.InterestId);
+            var action=e.target.value;
+            console.log(action)
+            if(action=="follow"){
+                args.Action=1;
+                e.target.value="unfollow";
+                $(e.target).text("unfollow");
+            }else {
+                args.Action=0;
+                e.target.value="follow";
+                $(e.target).text("follow");
+            }
+            rpc.Call({
+                method: "FollowInfo.FollowHandler",
+                params: new Array(args),
+                success: function(result){
+                    blogid=result;
+                },
+                error: function(error){
+                    msg.prepend("<li>follow error: " + error + "</li>");
+                    $('#divide-result').val("0 ......0");
+                }
+            });
+        }
     });
 
 

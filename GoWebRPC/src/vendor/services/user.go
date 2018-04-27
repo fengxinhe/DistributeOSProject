@@ -8,9 +8,9 @@ import (
 
 type UserInfo struct {
     Id int
-    Client [32]*rpc.Client
-    Mutex  [32]sync.Mutex
-    SocketClient  [32]*connection
+    Client [5]*rpc.Client
+    Mutex  [5]sync.Mutex
+    //SocketClient  [32]*websocket.Conn
 }
 type Users struct {
     Username    string
@@ -43,6 +43,7 @@ func findUserID(name string) int{
 }
 func (u *UserInfo) Register (args *Users, id *int) error {
     usermutex.Lock()
+    defer usermutex.Unlock()
     if -1 != findUserID(args.Username){
         *id=-1
         usermutex.Unlock()
@@ -51,22 +52,30 @@ func (u *UserInfo) Register (args *Users, id *int) error {
     UserList=append(UserList, args.Username)
     UserDB[args.Username]=args.Psd
     UserStatus[args.Username]=0
+    var arr [5]int
+    arr[findUserID(args.Username)]=1
+    FollowDB[args.Username]=&arr
     *id=1
-    usermutex.Unlock()
+    msg:="register"+" "+ args.Username
+    H.broadcast <- msg
+    return nil
+}
+
+func (u *UserInfo) GetMember(args *Users, reply *[]string) error{
+    tmp:=append([]string(nil), UserList...)
+    tmp[args.Psd]="me"
+    *reply=tmp
     return nil
 }
 func (u *UserInfo) Signin (args *Users, id *int) error {
     //*id = u.Id
-
-    //fmt.Println(args.Psd)
     usermutex.Lock()
+    defer usermutex.Unlock()
     if args.Psd != UserDB[args.Username]{
         fmt.Println("error user psd")
         *id=-1
-        //usermutex.Unlock()
-        //return nil
-    }else{
 
+    }else{
         userid:=findUserID(args.Username)
         fmt.Println(UserStatus[args.Username])
         if UserStatus[args.Username]==0{
@@ -76,13 +85,12 @@ func (u *UserInfo) Signin (args *Users, id *int) error {
             *id=-1
         }
     }
-    usermutex.Unlock()
-
     //fmt.Printf("signin handler%d\n", userid)
     return nil
 }
 func (u *UserInfo) Signout (args *Users, success *int) error {
-
+    usermutex.Lock()
+    defer usermutex.Unlock()
     userid:=findUserID(args.Username)
     //fmt.Println(userid)
     if UserStatus[args.Username]==1{
@@ -90,6 +98,7 @@ func (u *UserInfo) Signout (args *Users, success *int) error {
         fmt.Printf("signout handler%d\n", userid)
         u.Mutex[userid].Unlock()
         UserStatus[args.Username]=0
+        H.socketunregister <- userid
     }else{
         *success=-1
     }

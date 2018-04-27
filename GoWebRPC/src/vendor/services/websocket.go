@@ -24,6 +24,7 @@ func PushHandler(ws *websocket.Conn) {
     //fmt.Println(c)
     User.Client[id] = c;
     User.Mutex[id].Lock()
+    AddSocketConnection(ws, id)
     fmt.Printf("push handler%d\n", id)
     NotifyHandler(ws)
 
