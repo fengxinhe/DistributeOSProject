@@ -10,6 +10,7 @@ type UserInfo struct {
     Id int
     Client [5]*rpc.Client
     Mutex  [5]sync.Mutex
+    usermutex  sync.Mutex
     //SocketClient  [32]*websocket.Conn
 }
 type Users struct {
@@ -21,17 +22,17 @@ type LoginResponse struct {
     Username  string
     Success   int
 }
-var UserList = []string{"aaa","bbb"}
-var UserDB = map[string]int{
-    "aaa": 111,
-    "bbb": 222,
-}
-var UserStatus = map[string]int{
-    "aaa": 0,
-    "bbb": 0,
-}
+// var UserList = []string{"aaa","bbb"}
+// var UserDB = map[string]int{
+//     "aaa": 111,
+//     "bbb": 222,
+// }
+// var UserStatus = map[string]int{
+//     "aaa": 0,
+//     "bbb": 0,
+// }
 var User = new(UserInfo)
-var usermutex = &sync.Mutex{}
+//var usermutex = &sync.Mutex{}
 
 func findUserID(name string) int{
         for i, val := range UserList{
@@ -42,11 +43,11 @@ func findUserID(name string) int{
         return -1
 }
 func (u *UserInfo) Register (args *Users, id *int) error {
-    usermutex.Lock()
-    defer usermutex.Unlock()
+    u.usermutex.Lock()
+    defer u.usermutex.Unlock()
     if -1 != findUserID(args.Username){
         *id=-1
-        usermutex.Unlock()
+        //usermutex.Unlock()
         return nil
     }
     UserList=append(UserList, args.Username)
@@ -69,8 +70,8 @@ func (u *UserInfo) GetMember(args *Users, reply *[]string) error{
 }
 func (u *UserInfo) Signin (args *Users, id *int) error {
     //*id = u.Id
-    usermutex.Lock()
-    defer usermutex.Unlock()
+    u.usermutex.Lock()
+    defer u.usermutex.Unlock()
     if args.Psd != UserDB[args.Username]{
         fmt.Println("error user psd")
         *id=-1
@@ -89,8 +90,8 @@ func (u *UserInfo) Signin (args *Users, id *int) error {
     return nil
 }
 func (u *UserInfo) Signout (args *Users, success *int) error {
-    usermutex.Lock()
-    defer usermutex.Unlock()
+    u.usermutex.Lock()
+    defer u.usermutex.Unlock()
     userid:=findUserID(args.Username)
     //fmt.Println(userid)
     if UserStatus[args.Username]==1{

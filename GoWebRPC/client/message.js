@@ -24,7 +24,7 @@ function addBlog(msg){
     +'<div class="blog">Author: '//+ //'<img src="' + getGravatar(msg[2]) + '">'
     +msg[2]+''
     +'<br>Blog:   '+msg.slice(3).join(" ")+''
-    +'<button style="background-color:MediumSeaGreen; color:white;" type="button" id="'+msg[1]+'" value="like">0</button>'
+    +'<button style="background-color:MediumSeaGreen; color:white;" class="likebtn" id="'+msg[1]+'" value="like">0</button>'
     +'</div><br>';
     //$('#blog-list').prepend('Star <button style="background-color:Orange; color:MediumSeaGreen;" type="button" id="'+msg[1]+'" value="like">0</button><br>');
     $('#blog-list').prepend(blogcontent);

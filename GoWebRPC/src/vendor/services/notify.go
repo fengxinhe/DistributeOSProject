@@ -7,17 +7,17 @@ import (
     // "encoding/json"
 )
 
-type connection struct {
-    // The websocket connection.
-    ws *websocket.Conn
-
-    // Buffered channel of outbound messages.
-    send chan string
-}
-type SocketMsg struct{
-    Id  int
-    WS		*websocket.Conn
-}
+// type connection struct {
+//     // The websocket connection.
+//     ws *websocket.Conn
+//
+//     // Buffered channel of outbound messages.
+//     send chan string
+// }
+// type SocketMsg struct{
+//     Id  int
+//     WS		*websocket.Conn
+// }
 func (c *connection) reader() {
     for {
         var msg string
@@ -46,16 +46,13 @@ func (c *connection) writer() {
 }
 
 func seperateWriter(ws *websocket.Conn,msg string) {
-    //for {
-        fmt.Println("wwwwwwwwwwww")
+        fmt.Println("write sep")
         fmt.Println(msg)
         err := websocket.Message.Send(ws, msg)
         if err != nil{
             log.Print("socket send error:", err)
             ws.Close()
         }
-    //}
-
 }
 
 func AddSocketConnection(ws *websocket.Conn, id int){

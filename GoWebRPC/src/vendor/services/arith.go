@@ -2,6 +2,7 @@ package services
 
 import (
     "errors"
+    "fmt"
 
 )
 
@@ -18,6 +19,7 @@ type Arith int
 
 func (t *Arith) Multiply(args *Args, reply *int) error {
     *reply = args.A * args.B
+    fmt.Println("mmmmmmmmm")
     // mm := message{
     //     method: "broadcast",
     //     like:   3,

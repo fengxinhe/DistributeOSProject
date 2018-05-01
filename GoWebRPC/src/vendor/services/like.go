@@ -9,19 +9,19 @@ import(
 
 type LikeInfo struct{
     Id  int
-
+    likemutex  sync.Mutex
 }
 type Likes struct {
     Num int
     Id  int
 }
 var Like = new(LikeInfo)
-var LikeDB = make(map[int]int)
-var likemutex = &sync.Mutex{}
+// var LikeDB = make(map[int]int)
 
 func (like *LikeInfo) LikeHandler(args *Likes, reply *int) error {
     fmt.Println("LikeHandler")
-    likemutex.Lock()
+    like.likemutex.Lock()
+    defer like.likemutex.Unlock()
     if args.Num==1 {
         LikeDB[args.Id]+=1
         *reply=LikeDB[args.Id]
@@ -34,6 +34,5 @@ func (like *LikeInfo) LikeHandler(args *Likes, reply *int) error {
     }
      msg:="modifylike"+" "+strconv.Itoa(args.Id)+" "+strconv.Itoa(LikeDB[args.Id])
      H.broadcast <- msg
-     likemutex.Unlock()
      return nil
 }

@@ -147,7 +147,24 @@ $(function() {
             }
         });
     });
-
+    $('#Test').click(function(){
+        var args = {};
+        args.Type = "Arith.Multiply";
+        //args.Content = $('#blog').val();
+        //console.log(args.Content)
+        //args.Heat=0
+        rpc.Call({
+            method: "Command.RequestHandler",
+            params: new Array(args),
+            success: function(result){
+                msg.prepend("<li>relication:kkk</li>");
+            },
+            error: function(error){
+                msg.prepend("<li>rpc error: " + error + "</li>");
+                $('#divide-result').val("0 ......0");
+            }
+        });
+    });
     document.getElementById('blog-list').addEventListener('click', function (e) {
             //console.log(e.target.nodeName);
           if (e.target.nodeName == "BUTTON") {

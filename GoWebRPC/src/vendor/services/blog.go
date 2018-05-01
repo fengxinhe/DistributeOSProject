@@ -10,19 +10,19 @@ import(
 
 type BlogInfo struct{
     Id  uint64
-
+    blogmutex   sync.Mutex
 }
 type Blogs struct {
     Author  string
     Content string
-//    Heat    int
 }
 
-var blogmutex = &sync.Mutex{}
+//var blogmutex = &sync.Mutex{}
 var Blog = new(BlogInfo)
-var BlogDB = make(map[int]string)
+// var BlogDB = make(map[int]string)
 func (b *BlogInfo) AddBlog(args *Blogs, reply *int) error {
-     blogmutex.Lock()
+     b.blogmutex.Lock()
+     defer b.blogmutex.Unlock()
      fmt.Println("send")
      BlogDB[int(b.Id)]=args.Content
      LikeDB[int(b.Id)]=0
@@ -34,6 +34,5 @@ func (b *BlogInfo) AddBlog(args *Blogs, reply *int) error {
      H.message <- smsg
      //b.Id++
      atomic.AddUint64(&b.Id, 1)
-     blogmutex.Unlock()
      return nil
 }

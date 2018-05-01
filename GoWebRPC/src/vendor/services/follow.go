@@ -7,6 +7,7 @@ import (
 
 type FollowInfo struct{
     Id int
+    followmutex sync.Mutex
 }
 
 type Following struct{
@@ -16,15 +17,15 @@ type Following struct{
 }
 var Follow=new(FollowInfo)
 //var followinglist=[]string{}
-var FollowDB = map[string]*[5]int{
-    "aaa":{1,0,0,0,0},
-    "bbb":{0,1,0,0,0},
-}
-var followmutex = &sync.Mutex{}
+// var FollowDB = map[string]*[5]int{
+//     "aaa":{1,0,0,0,0},
+//     "bbb":{0,1,0,0,0},
+// }
+//var followmutex = &sync.Mutex{}
 
 func (f *FollowInfo)FollowHandler(args *Following, reply *int) error{
-    //followmutex.Lock()
-    //defer followmutex.Unlock()
+    f.followmutex.Lock()
+    defer f.followmutex.Unlock()
     fmt.Printf("follow action: %d\n", args.Action)
     if list, ok := FollowDB[args.InterestId]; ok {
         list[args.UserId]=args.Action
