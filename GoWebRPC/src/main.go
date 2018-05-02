@@ -6,21 +6,21 @@ import (
     "net/rpc"
     "flag"
     "services"
-    "server"
+    //"server"
     "fmt"
 )
 
 func main() {
-    port := flag.String("port", ":8010", "http service address")
+    port := flag.String("port", ":8000", "http service address")
     htdocs := flag.String("../client", "../client", "http dir")
     flag.Parse()
-    server.SM.StartServer()
-    rpc.Register(services.User)
+    services.SM.StartServer()
+    //rpc.Register(services.User)
     fmt.Println("sratttttt")
-    rpc.Register(services.Blog)
-    rpc.Register(services.Like)
-    rpc.Register(server.SS)
-    rpc.Register(services.Follow)
+    // rpc.Register(services.Blog)
+    // rpc.Register(services.Like)
+     rpc.Register(services.SS)
+    // rpc.Register(services.Follow)
     go services.H.Run()
     http.Handle("/jsonrpc", websocket.Handler(services.JsonrpcHandler))
     http.Handle("/notify", websocket.Handler(services.NotifyHandler))

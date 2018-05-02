@@ -2,7 +2,7 @@ package services
 
 import(
     //"errors"
-    "strconv"
+    //"strconv"
     "fmt"
     "sync"
 )
@@ -18,21 +18,21 @@ type Likes struct {
 var Like = new(LikeInfo)
 // var LikeDB = make(map[int]int)
 
-func (like *LikeInfo) LikeHandler(args *Likes, reply *int) error {
+func (like *LikeInfo) LikeHandler(args *Command, reply *int) error {
     fmt.Println("LikeHandler")
     like.likemutex.Lock()
     defer like.likemutex.Unlock()
     if args.Num==1 {
-        LikeDB[args.Id]+=1
-        *reply=LikeDB[args.Id]
+        NDB[args.DBid].LikeDB[args.Id]+=1
+        *reply=NDB[args.DBid].LikeDB[args.Id]
     }else if args.Num==-1{
-        LikeDB[args.Id]-=1
-        *reply=LikeDB[args.Id]
+        NDB[args.DBid].LikeDB[args.Id]-=1
+        *reply=NDB[args.DBid].LikeDB[args.Id]
     }else {
         fmt.Println("like error")
         return nil
     }
-     msg:="modifylike"+" "+strconv.Itoa(args.Id)+" "+strconv.Itoa(LikeDB[args.Id])
-     H.broadcast <- msg
+     // msg:="modifylike"+" "+strconv.Itoa(args.Id)+" "+strconv.Itoa(LikeDB[args.Id])
+     // H.broadcast <- msg
      return nil
 }

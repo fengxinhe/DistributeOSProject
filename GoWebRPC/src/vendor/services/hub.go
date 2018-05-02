@@ -43,8 +43,8 @@ func (h *hub) Run() {
         case c := <-h.unregister:
             delete(h.connections, c)
             close(c.send)
-        case d:=<-h.socketunregister:
-            delete(h.connectionMap,d)
+        case id:=<-h.socketunregister:
+            delete(h.connectionMap,id)
         case c:= <-h.socketregister:
             h.connectionMap[c.Id] = c.WS
 

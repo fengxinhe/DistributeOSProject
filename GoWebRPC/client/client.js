@@ -39,9 +39,11 @@ $(function() {
         var largs = {};
         largs.Username = $('#username').val();
         largs.Psd = parseInt($('#psd').val());
+        largs.ServiceName = "UserInfo.Register";
+        largs.Method="Register"
 
         rpc.Call({
-            method: "UserInfo.Register",
+            method: "Command.RequestHandler",
             params: new Array(largs),
             success: function(result){
                 id = result;
@@ -60,9 +62,11 @@ $(function() {
         var largs = {};
         largs.Username = $('#username').val();
         largs.Psd = parseInt($('#psd').val());
+        largs.ServiceName = "UserInfo.Signin";
+        largs.Method="Signin"
 
         rpc.Call({
-            method: "UserInfo.Signin",
+            method: "Command.RequestHandler",
             params: new Array(largs),
             success: function(result){
                 id = result;
@@ -111,8 +115,11 @@ $(function() {
         var largs = {};
         largs.Username = username;
         largs.Psd = parseInt($('#psd').val());
+        largs.ServiceName = "UserInfo.Signout";
+        largs.Method="Signout"
+
         rpc.Call({
-            method: "UserInfo.Signout",
+            method: "Command.RequestHandler",
             params: new Array(largs),
             success: function(result){
                 push.Close();
@@ -133,10 +140,12 @@ $(function() {
         var args = {};
         args.Author = $('#username').val();
         args.Content = $('#blog').val();
+        args.ServiceName = "BlogInfo.AddBlog";
+        args.Method="AddBlog"
         //console.log(args.Content)
         //args.Heat=0
         rpc.Call({
-            method: "BlogInfo.AddBlog",
+            method: "Command.RequestHandler",
             params: new Array(args),
             success: function(result){
                 blogid=result;
@@ -149,7 +158,7 @@ $(function() {
     });
     $('#Test').click(function(){
         var args = {};
-        args.Type = "Arith.Multiply";
+        args.ServiceName = "Arith.Multiply";
         //args.Content = $('#blog').val();
         //console.log(args.Content)
         //args.Heat=0
@@ -186,8 +195,10 @@ $(function() {
                   e.target.style.backgroundColor='MediumSeaGreen';
                   e.target.value="like";
               }
+              args.ServiceName = "LikeInfo.LikeHandler";
+              args.Method="LikeHandler"
               rpc.Call({
-                  method: "LikeInfo.LikeHandler",
+                  method: "Command.RequestHandler",
                   params: new Array(args),
                   success: function(result){
                       blogid=result;
@@ -219,8 +230,10 @@ $(function() {
                 e.target.value="follow";
                 $(e.target).text("follow");
             }
+            args.ServiceName = "FollowInfo.FollowHandler";
+            args.Method="FollowHandler"
             rpc.Call({
-                method: "FollowInfo.FollowHandler",
+                method: "Command.RequestHandler",
                 params: new Array(args),
                 success: function(result){
                     blogid=result;

@@ -23,22 +23,22 @@ var Follow=new(FollowInfo)
 // }
 //var followmutex = &sync.Mutex{}
 
-func (f *FollowInfo)FollowHandler(args *Following, reply *int) error{
+func (f *FollowInfo)FollowHandler(args *Command, reply *int) error{
     f.followmutex.Lock()
     defer f.followmutex.Unlock()
     fmt.Printf("follow action: %d\n", args.Action)
-    if list, ok := FollowDB[args.InterestId]; ok {
+    if list, ok := NDB[args.DBid].FollowDB[args.InterestId]; ok {
         list[args.UserId]=args.Action
     }else{
-        FollowDB[args.InterestId]=&[5]int{0}
-        FollowDB[args.InterestId][args.UserId]=args.Action
+        NDB[args.DBid].FollowDB[args.InterestId]=&[5]int{0}
+        NDB[args.DBid].FollowDB[args.InterestId][args.UserId]=args.Action
     }
     *reply=1
     return nil
 }
 
-func GetFriends(name string) [5]int{
-    if list, ok := FollowDB[name]; ok {
+func GetFriends(dbid int,name string) [5]int{
+    if list, ok := NDB[dbid].FollowDB[name]; ok {
         return *list
     }
     return [5]int{0}
