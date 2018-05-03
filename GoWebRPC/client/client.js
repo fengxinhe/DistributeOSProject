@@ -92,6 +92,7 @@ $(function() {
                     var args = {};
                     args.Username = username;
                     args.Psd = id;
+                    args.DBid=1
                     rpc.Call({
                         method:"UserInfo.GetMember",
                         params: new Array(args),

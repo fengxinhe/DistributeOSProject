@@ -68,9 +68,9 @@ var FollowDB = map[string]*[5]int{
 //     "bbb": 0,
 // }
 ////////////////////////////////////
-var BlogDB = make(map[int]string)
-/////////////////////////////////////////
-var LikeDB = make(map[int]int)
+// var BlogDB = make(map[int]string)
+// /////////////////////////////////////////
+// var LikeDB = make(map[int]int)
 //////////////////////////////////////////
 type connection struct {
     ws *websocket.Conn
