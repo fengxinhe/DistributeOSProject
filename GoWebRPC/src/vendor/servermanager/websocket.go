@@ -1,4 +1,4 @@
-package services
+package servermanager
 
 import (
     "golang.org/x/net/websocket"
@@ -22,8 +22,8 @@ func PushHandler(ws *websocket.Conn) {
         return
     }
     //fmt.Println(c)
-    User.Client[id] = c;
-    User.Mutex[id].Lock()
+    //User.Client[id] = c;
+    //User.Mutex[id].Lock()
     AddSocketConnection(ws, id)
     fmt.Printf("push handler%d\n", id)
     NotifyHandler(ws)

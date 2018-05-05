@@ -46,7 +46,7 @@ $(function() {
             method: "Command.RequestHandler",
             params: new Array(largs),
             success: function(result){
-                id = result;
+                id = result.Val;
                 console.log(id)
                 if(id!=-1){
                     $('#register').hide();
@@ -69,7 +69,8 @@ $(function() {
             method: "Command.RequestHandler",
             params: new Array(largs),
             success: function(result){
-                id = result;
+                id = result.Val;
+                console.log(id)
                 if(id!=-1){
                     //msg.prepend("<li>id: " + result + "</li>");
                     username=$('#username').val();
@@ -92,14 +93,16 @@ $(function() {
                     var args = {};
                     args.Username = username;
                     args.Psd = id;
-                    args.DBid=1
+                    args.ServiceName = "UserInfo.GetMember";
+                    args.Method="GetMember";
+
                     rpc.Call({
-                        method:"UserInfo.GetMember",
+                        method:"Command.RequestHandler",
                         params: new Array(args),
                         success: function(result){
                             //memberlist.append(result);
                             memberlist.empty();
-                            generateMemberList(result);
+                            generateMemberList(result.List);
                         },
                         error: function(error){
                             msg.prepend("<li>Get member error: " + error + "</li>");
@@ -149,7 +152,7 @@ $(function() {
             method: "Command.RequestHandler",
             params: new Array(args),
             success: function(result){
-                blogid=result;
+                blogid=result.Val;
             },
             error: function(error){
                 msg.prepend("<li>rpc error: " + error + "</li>");
@@ -237,7 +240,7 @@ $(function() {
                 method: "Command.RequestHandler",
                 params: new Array(args),
                 success: function(result){
-                    blogid=result;
+                    blogid=result.Val;
                 },
                 error: function(error){
                     msg.prepend("<li>follow error: " + error + "</li>");

@@ -1,4 +1,4 @@
-package services
+package servermanager
 
 import (
     "golang.org/x/net/websocket"
@@ -21,7 +21,7 @@ import (
 func (c *connection) reader() {
     for {
         var msg string
-        fmt.Println("wwwrrrrr")
+        //fmt.Println("wwwrrrrr")
         err := websocket.Message.Receive(c.ws, &msg)
         if err != nil {
             break
@@ -33,7 +33,7 @@ func (c *connection) reader() {
 
 func (c *connection) writer() {
     for message := range c.send {
-        fmt.Println("wwwwwwwwwwww")
+    //    fmt.Println("wwwwwwwwwwww")
         fmt.Println(message)
 
         err := websocket.Message.Send(c.ws, message)

@@ -34,76 +34,82 @@ type LoginResponse struct {
 var User = new(UserInfo)
 //var usermutex = &sync.Mutex{}
 
-func findUserID(dbid int,name string) int{
-        for i, val := range NDB[dbid].UserList{
+func findUserID(name string) int{
+        for i, val := range UserList{
             if val==name{
                 return i
             }
         }
         return -1
 }
-func (u *UserInfo) Register (args *Command, id *int) error {
+func (u *UserInfo) Register (args *Command, id *ReplyMessage) error {
     u.usermutex.Lock()
     defer u.usermutex.Unlock()
-    if -1 != findUserID(args.DBid,args.Username){
-        *id=-1
+    Node.LastApplied++
+    if -1 != findUserID(args.Username){
+        id.Val=-1
         //usermutex.Unlock()
         return nil
     }
-    NDB[args.DBid].UserList=append(NDB[args.DBid].UserList, args.Username)
-    NDB[args.DBid].UserDB[args.Username]=args.Psd
-    NDB[args.DBid].UserStatus[args.Username]=0
+    UserList=append(UserList, args.Username)
+    UserDB[args.Username]=args.Psd
+    UserStatus[args.Username]=0
     var arr [5]int
-    arr[findUserID(args.DBid,args.Username)]=1
-    NDB[args.DBid].FollowDB[args.Username]=&arr
-    *id=1
+    arr[findUserID(args.Username)]=1
+    FollowDB[args.Username]=&arr
+    id.Val=1
     // msg:="register"+" "+ args.Username
     // H.broadcast <- msg
     return nil
 }
 
-func (u *UserInfo) GetMember(args *Command, reply *[]string) error{
-    tmp:=append([]string(nil), NDB[args.DBid].UserList...)
+func (u *UserInfo) GetMember(args *Command, reply *ReplyMessage) error{
+    Node.LastApplied++
+    tmp:=append([]string(nil),UserList...)
     tmp[args.Psd]="me"
-    *reply=tmp
+    reply.List=tmp
     return nil
 }
-func (u *UserInfo) Signin (args *Command, id *int) error {
+func (u *UserInfo) Signin (args *Command, id *ReplyMessage) error {
     //*id = u.Id
     u.usermutex.Lock()
     defer u.usermutex.Unlock()
+    Node.LastApplied++
     fmt.Println("signin....")
+    fmt.Println(args.Username)
+
     //fmt.Println(args.DBid)
-    if args.Psd != NDB[args.DBid].UserDB[args.Username]{
+    if args.Psd != UserDB[args.Username]{
         fmt.Println("error user psd")
-        *id=-1
+        id.Val=-1
 
     }else{
-        userid:=findUserID(args.DBid,args.Username)
+        userid:=findUserID(args.Username)
         //fmt.Println(UserStatus[args.Username])
-        if NDB[args.DBid].UserStatus[args.Username]==0{
-            *id=userid
-            NDB[args.DBid].UserStatus[args.Username]=1
+        if UserStatus[args.Username]==0{
+            id.Val=userid
+            UserStatus[args.Username]=1
         }else{
-            *id=-1
+            id.Val=-1
         }
     }
     //fmt.Printf("signin handler%d\n", userid)
     return nil
 }
-func (u *UserInfo) Signout (args *Command, success *int) error {
+func (u *UserInfo) Signout (args *Command, success *ReplyMessage) error {
     u.usermutex.Lock()
     defer u.usermutex.Unlock()
-    userid:=findUserID(0,args.Username)
+    Node.LastApplied++
+    userid:=findUserID(args.Username)
     //fmt.Println(userid)
-    if NDB[args.DBid].UserStatus[args.Username]==1{
-        *success=userid
+    if UserStatus[args.Username]==1{
+        success.Val=userid
         fmt.Printf("signout handler%d\n", userid)
         //u.Mutex[userid].Unlock()
-        NDB[args.DBid].UserStatus[args.Username]=0
+        UserStatus[args.Username]=0
         //H.socketunregister <- userid
     }else{
-        *success=-1
+        success.Val=-1
     }
     return nil
 

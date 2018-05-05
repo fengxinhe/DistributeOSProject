@@ -16,23 +16,21 @@ type Likes struct {
     Id  int
 }
 var Like = new(LikeInfo)
-// var LikeDB = make(map[int]int)
 
-func (like *LikeInfo) LikeHandler(args *Command, reply *int) error {
+func (like *LikeInfo) LikeHandler(args *Command, reply *ReplyMessage) error {
     fmt.Println("LikeHandler")
     like.likemutex.Lock()
     defer like.likemutex.Unlock()
+    Node.LastApplied++
     if args.Num==1 {
-        NDB[args.DBid].LikeDB[args.Id]+=1
-        *reply=NDB[args.DBid].LikeDB[args.Id]
+        LikeDB[args.Id]+=1
+        reply.Val=LikeDB[args.Id]
     }else if args.Num==-1{
-        NDB[args.DBid].LikeDB[args.Id]-=1
-        *reply=NDB[args.DBid].LikeDB[args.Id]
+        LikeDB[args.Id]-=1
+        reply.Val=LikeDB[args.Id]
     }else {
         fmt.Println("like error")
         return nil
     }
-     // msg:="modifylike"+" "+strconv.Itoa(args.Id)+" "+strconv.Itoa(LikeDB[args.Id])
-     // H.broadcast <- msg
      return nil
 }

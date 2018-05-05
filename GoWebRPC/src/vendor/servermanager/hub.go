@@ -1,4 +1,4 @@
-package services
+package servermanager
 
 import "fmt"
 import "golang.org/x/net/websocket"
