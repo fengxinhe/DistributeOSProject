@@ -40,3 +40,26 @@ func (hb *HeartBeat) SetLeader(args *HeartMessage, reply *ServerReply) error{
     Node.Leader=args.LeaderId
     return nil
 }
+
+
+func (hb*HeartBeat) GetDB(args *HeartMessage, reply *DBMsg) error{
+
+    reply.FollowDB=FollowDB
+    reply.UserList=UserList
+    reply.UserDB=UserDB
+    reply.UserStatus=UserStatus
+    reply.BlogDB=BlogDB
+    reply.LikeDB=LikeDB
+    return nil
+}
+
+func (hb*HeartBeat) DBRecovery(args *DBMsg, reply *int) error{
+    FollowDB=args.FollowDB
+    UserList=args.UserList
+    UserDB=args.UserDB
+    UserStatus=args.UserStatus
+    BlogDB=args.BlogDB
+    LikeDB=args.LikeDB
+    *reply=Node.ServerId
+    return nil
+}

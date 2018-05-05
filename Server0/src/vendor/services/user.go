@@ -77,7 +77,7 @@ func (u *UserInfo) Signin (args *Command, id *ReplyMessage) error {
     Node.LastApplied++
     fmt.Println("signin....")
     fmt.Println(args.Username)
-
+    fmt.Println(UserDB)
     //fmt.Println(args.DBid)
     if args.Psd != UserDB[args.Username]{
         fmt.Println("error user psd")

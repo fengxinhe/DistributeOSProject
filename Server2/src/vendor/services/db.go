@@ -23,7 +23,14 @@ type Command struct {
 
     DBid int
 }
-
+type DBMsg struct{
+    FollowDB  map[string]*[5]int
+    UserList  []string
+    UserDB  map[string]int
+    UserStatus  map[string]int
+    BlogDB  map[int]string
+    LikeDB  map[int]int
+}
 
 type ReplyMessage struct{
     Val  int

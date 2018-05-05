@@ -223,10 +223,11 @@ func (s *ServerManager)ReDialling(name string, port string){
 func (s *ServerManager)DBRecovery(name string){
 
     var db DBMsg
-    dbquery := DBQueryMsg{s.LeaderName}
-    var success int
-    s.RpcServer[s.LeaderName].Call("DB.GetDB",dbquery,&db)
-    s.RpcServer[name].Call("DB.Recovery",db,&success)
+    DBBeatMsg:=&HeartMessage{s.Leaderid}
+    var successid int
+    s.RpcServer[s.LeaderName].Call("HeartBeat.GetDB",DBBeatMsg,&db)
+    s.RpcServer[name].Call("HeartBeat.DBRecovery",&db,&successid)
+    fmt.Printf("DB recovering successfully---%d\n",successid)
 
 }
 func (c *Command) RequestHandler(args *Command, reply *ReplyMessage) error {
@@ -240,8 +241,6 @@ func (c *Command) RequestHandler(args *Command, reply *ReplyMessage) error {
         reply.Val=-1
         return err
     }
-    //fmt.Println(reply)
-
     //Websocket channel
     switch method:=args.Method; method{
     case "Signout":

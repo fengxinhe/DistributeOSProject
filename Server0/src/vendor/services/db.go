@@ -20,10 +20,16 @@ type Command struct {
 
     A int
     B int
-
-    DBid int
 }
 
+type DBMsg struct{
+    FollowDB  map[string]*[5]int
+    UserList  []string
+    UserDB  map[string]int
+    UserStatus  map[string]int
+    BlogDB  map[int]string
+    LikeDB  map[int]int
+}
 
 type ReplyMessage struct{
     Val  int
@@ -34,7 +40,6 @@ var FollowDB = map[string]*[5]int{
     "aaa":{1,0,0,0,0},
     "bbb":{0,1,0,0,0},
 }
-///////////////////////////////
 var UserList = []string{"aaa","bbb"}
 var UserDB = map[string]int{
     "aaa": 111,
@@ -44,13 +49,9 @@ var UserStatus = map[string]int{
     "aaa": 0,
     "bbb": 0,
 }
-//////////////////////////////////
 var BlogDB = make(map[int]string)
-/////////////////////////////////////////
 var LikeDB = make(map[int]int)
-//////////////////////////////////////////
 var LogDB=make(map[int]string)
-/////
 
 type connection struct {
     ws *websocket.Conn
