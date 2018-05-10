@@ -187,17 +187,9 @@ $(function() {
               console.log(e.target.value);
               var like=e.target.value;
               if(like=="like"){
-                  args.Num=1;
-                 e.target.value="dislike";
-                 e.target.style.backgroundColor='Tomato';
-                 //$(e.target).text("dislike")
-                // $(e.target).children().text("1")
+                 args.Num=1;
               }else {
                   args.Num=-1;
-                 // $(e.target).text("like")
-                  //$(e.target).children().text("0")
-                  e.target.style.backgroundColor='MediumSeaGreen';
-                  e.target.value="like";
               }
               args.ServiceName = "LikeInfo.LikeHandler";
               args.Method="LikeHandler"
@@ -206,6 +198,14 @@ $(function() {
                   params: new Array(args),
                   success: function(result){
                       blogid=result;
+                      if(like=="like"){
+                         e.target.value="dislike";
+                         e.target.style.backgroundColor='Tomato';
+
+                      }else {
+                          e.target.style.backgroundColor='MediumSeaGreen';
+                          e.target.value="like";
+                      }
                   },
                   error: function(error){
                       msg.prepend("<li>like error: " + error + "</li>");
@@ -227,12 +227,8 @@ $(function() {
             console.log(action)
             if(action=="follow"){
                 args.Action=1;
-                e.target.value="unfollow";
-                $(e.target).text("unfollow");
             }else {
                 args.Action=0;
-                e.target.value="follow";
-                $(e.target).text("follow");
             }
             args.ServiceName = "FollowInfo.FollowHandler";
             args.Method="FollowHandler"
@@ -241,6 +237,13 @@ $(function() {
                 params: new Array(args),
                 success: function(result){
                     blogid=result.Val;
+                    if(action=="follow"){
+                        e.target.value="unfollow";
+                        $(e.target).text("unfollow");
+                    }else {
+                        e.target.value="follow";
+                        $(e.target).text("follow");
+                    }
                 },
                 error: function(error){
                     msg.prepend("<li>follow error: " + error + "</li>");
@@ -252,3 +255,4 @@ $(function() {
 
 
 });
+
