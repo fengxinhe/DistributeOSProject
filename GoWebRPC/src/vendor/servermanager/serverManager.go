@@ -43,6 +43,7 @@ func (s *ServerManager)DialServer(name string, port string){
     if err != nil {
          //log.Fatal("dialing:", err)
          fmt.Println("dial error")
+         //return
      }else{
          s.MapLock.Lock()
          defer s.MapLock.Unlock()
@@ -52,8 +53,8 @@ func (s *ServerManager)DialServer(name string, port string){
 }
 func (sm *ServerManager)StartServer(){
 
-    sm.LeaderName="node-1"
-    sm.Leaderid=1
+    sm.LeaderName="node-0"
+    sm.Leaderid=0
     fmt.Println("server init ok")
     for name, port := range serverportmap{
         wg.Add(1)
@@ -62,9 +63,11 @@ func (sm *ServerManager)StartServer(){
 
     wg.Wait()
     fmt.Println("heartbeat")
-    for name, _ := range sm.RpcServer{
-        go sm.HeartBeat(name)
-    }
+    //for name, _ := range sm.RpcServer{
+        go sm.HeartBeat("node-0")
+        go sm.HeartBeat("node-1")
+        go sm.HeartBeat("node-2")
+    //}
 }
 
 func (sm *ServerManager) DispatchCommand(service string, args *Command)(ReplyMessage,error){
@@ -82,7 +85,9 @@ func (sm *ServerManager) DispatchCommand(service string, args *Command)(ReplyMes
             if err!=nil || !serverreply.Ack{
                 *wrong++
                 if(name==sm.LeaderName){
-                sm.LeaderElection()
+                    sm.Leaderid=-1
+                    sm.LeaderName="leader error"
+                //    sm.LeaderElection()
                     fmt.Println("Leader fail.....")
                     *wrong=3
                     return err
@@ -115,8 +120,10 @@ func (sm *ServerManager) DispatchCommand(service string, args *Command)(ReplyMes
                 reply.Val=-1
                 *wrong++
                 if(sname==sm.LeaderName){
+                    sm.LeaderName="leader error"
+                    sm.Leaderid=-1
                     fmt.Println("Leader fail.....,wait......")
-                    sm.LeaderElection()
+                    //sm.LeaderElection()
                 }
             }
             if *wrong>1{
@@ -135,30 +142,44 @@ func (sm *ServerManager) DispatchCommand(service string, args *Command)(ReplyMes
 func (sm *ServerManager)LeaderElection(){
     cmt:=0
     count:=0
+    tmpleader:=0
+    tmpname:="no leader"
     var wg sync.WaitGroup
+    sm.Leaderid=-1
+    sm.LeaderName="no leader"
+    var err error
     for name, _ := range sm.RpcServer {
         wg.Add(1)
-        go func(cnt *int, cindex *int, name string){
+        go func(cnt *int, cindex *int,leader *int,lname *string, name string){
             HeartBeatMsg:=&HeartMessage{-1}
             var Reply ServerReply
-            err := sm.RpcServer[name].Call("HeartBeat.Voting",HeartBeatMsg,&Reply)
+            err = sm.RpcServer[name].Call("HeartBeat.Voting",HeartBeatMsg,&Reply)
+            fmt.Println("eeeeeeeeee----------------")
             if err!=nil{
                 fmt.Println(name+" down!")
                 *cnt++
-                if *cnt>1{
-                    return
-                }
+                // if *cnt>1{
+                //     wg.Done()
+                //     return
+                // }
             }else{
+                fmt.Println("okkkk------kkk")
                 if Reply.LastCommit>=*cindex {
-                    sm.Leaderid=Reply.ServerId
-                    sm.LeaderName=name
+                    *leader=Reply.ServerId
+                    *lname=name
                     *cindex=Reply.LastCommit
+                    fmt.Println("okkkk------gggggg")
+
                 }
             }
             wg.Done()
-        }(&count,&cmt, name)
+        }(&count,&cmt,&tmpleader,&tmpname, name)
     }
+    fmt.Println("okkkk------nnnnnnnnnn")
     wg.Wait()
+    if count<=1 {
+    sm.Leaderid=tmpleader
+    sm.LeaderName=tmpname
     fmt.Println("choosing....->"+sm.LeaderName)
     count=0
     // broadcast every node who is the leader
@@ -171,36 +192,44 @@ func (sm *ServerManager)LeaderElection(){
             if err!=nil{
                 fmt.Println(name+" down!")
                 *cnt++
-                if *cnt>1 {
-                    return
-                }
+                // if *cnt>1 {
+                //     return
+                // }
             }
             wg.Done()
         }(&count,name)
     }
     wg.Wait()
+    }
 
 }
 
 func (s *ServerManager)HeartBeat(name string){
     //i:=0
     for {
-        time.Sleep(3*time.Second)
+        fmt.Println("heart beat..."+s.LeaderName)
+        time.Sleep(2*time.Second)
         //var reply bool
         HeartBeatMsg:=&HeartMessage{s.Leaderid}
         var Reply ServerReply
         //fmt.Println("send heartbeat to "+s.Name)
         err:=s.RpcServer[name].Call("HeartBeat.HeartBeat",HeartBeatMsg,&Reply)
         //fmt.Println(Reply)
+        if s.Leaderid==-1{
+            s.LeaderElection()
+        }
         if err!=nil{
             //log.Fatal("call error: ",err)
             s.ReDialling(name,serverportmap[name])
-            if name == s.LeaderName{
-                fmt.Println("start leader election......")
-                s.LeaderElection()
-            }
+            // if name == s.LeaderName{
+            //     fmt.Println("start leader election......")
+            //     s.Leaderid=-1
+            //     s.LeaderName="leader error"
+            //     s.LeaderElection()
+            // }
             fmt.Println(err)
         }
+
         if Reply.Ack{
             fmt.Println(name +"....... normal!")
         }
@@ -209,9 +238,15 @@ func (s *ServerManager)HeartBeat(name string){
 }
 func (s *ServerManager)ReDialling(name string, port string){
     fmt.Println("Redialling")
+
     sv, err :=jsonrpc.Dial("tcp", "localhost:"+port)//+s.Port)
     if err != nil {
          fmt.Println("dial error")
+         if name == s.LeaderName{
+             s.Leaderid=-1
+             s.LeaderName="leader error"
+             s.LeaderElection()
+         }
      }else{
          s.MapLock.Lock()
          defer s.MapLock.Unlock()
@@ -222,13 +257,14 @@ func (s *ServerManager)ReDialling(name string, port string){
 
 func (s *ServerManager)DBRecovery(name string){
 
-    var db DBMsg
-    DBBeatMsg:=&HeartMessage{s.Leaderid}
-    var successid int
-    s.RpcServer[s.LeaderName].Call("HeartBeat.GetDB",DBBeatMsg,&db)
-    s.RpcServer[name].Call("HeartBeat.DBRecovery",&db,&successid)
-    fmt.Printf("DB recovering successfully---%d\n",successid)
-
+    if s.Leaderid !=-1{
+        var db DBMsg
+        DBBeatMsg:=&HeartMessage{s.Leaderid}
+        var successid int
+        s.RpcServer[s.LeaderName].Call("HeartBeat.GetDB",DBBeatMsg,&db)
+        s.RpcServer[name].Call("HeartBeat.DBRecovery",&db,&successid)
+        fmt.Printf("DB recovering successfully---%d\n",successid)
+    }
 }
 func (c *Command) RequestHandler(args *Command, reply *ReplyMessage) error {
     fmt.Println("request handler")
